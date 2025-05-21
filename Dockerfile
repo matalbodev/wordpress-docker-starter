@@ -11,3 +11,15 @@ RUN apt-get update && apt-get install -y \
     mariadb-client \
     iputils-ping \
  && apt-get clean
+
+# Activer SSL
+RUN a2enmod ssl
+RUN a2enmod rewrite
+
+# Copier la configuration SSL
+COPY apache-conf/ssl.conf /etc/apache2/sites-available/ssl.conf
+RUN a2ensite ssl
+
+# Copier et activer la configuration ServerName
+COPY apache-conf/servername.conf /etc/apache2/conf-available/servername.conf
+RUN a2enconf servername

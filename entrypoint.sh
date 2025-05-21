@@ -39,7 +39,7 @@ fi
 if ! wp core is-installed --allow-root; then
     echo "🛠️ Installation de WordPress..."
     wp core install \
-      --url="http://localhost:8080" \
+      --url=$WORDPRESS_HOST \
       --title="Aideventure" \
       --admin_user=admin \
       --admin_password=admin \
@@ -47,6 +47,12 @@ if ! wp core is-installed --allow-root; then
       --allow-root
 else
     echo "✅ WordPress déjà installé."
+fi
+
+if [ "$WORDPRESS_HTTPS" = "true" ]; then
+    echo "🔒 Configuration de la redirection HTTP vers HTTPS..."
+    wp option update home "https://$WORDPRESS_HOST" --allow-root
+    wp option update siteurl "https://$WORDPRESS_HOST" --allow-root
 fi
 
 # Lancer le serveur Apache
